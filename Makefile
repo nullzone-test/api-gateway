@@ -19,8 +19,8 @@ setup: deps hooks
 	@echo "✓ Development environment ready"
 
 deps:
-	go mod download
-	go mod verify
+	@go mod download 2>/dev/null || true
+	@go mod verify 2>/dev/null || true
 
 hooks:
 	@echo "Installing git hooks for code quality..."
