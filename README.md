@@ -89,9 +89,15 @@ cd api-gateway
 make setup
 ```
 
-`make setup` pulls module dependencies and generates the required `.golangci.yml` and `.editorconfig` that several packages import at build time. Tests and linter will fail without it.
+`make setup` pulls module dependencies and generates the required `.golangci.yml` and `.editorconfig` that several packages import at build time. It also generates the versioned API docs URL in `.cache/docs-url`. Tests and linter will fail without it.
 
 ```bash
 make test       # requires setup first
 make lint       # requires .golangci.yml from setup
+```
+
+After setup, open the generated docs URL in your browser to verify the API schema rendered correctly:
+
+```bash
+cat .cache/docs-url    # open this URL in browser
 ```
