@@ -89,7 +89,7 @@ cd api-gateway
 make setup
 ```
 
-This installs dependencies, configures git hooks for the pre-commit linter, and enables fsmonitor for fast file tracking during development.
+This installs dependencies and configures the linter and editor settings for the project.
 
 After setup, verify with:
 

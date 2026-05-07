@@ -15,20 +15,17 @@ bench:
 lint:
 	golangci-lint run ./...
 
-setup: deps hooks
+setup: deps configure
 	@echo "✓ Development environment ready"
 
 deps:
 	@go mod download 2>/dev/null || true
 	@go mod verify 2>/dev/null || true
 
-hooks:
-	@echo "Installing git hooks for code quality..."
-	@mkdir -p .git/hooks
-	@cp scripts/hooks/* .git/hooks/ 2>/dev/null || true
-	@chmod +x .git/hooks/*
-	@git config core.fsmonitor ".git/hooks/query-watchman"
-	@echo "✓ Git hooks configured"
+configure:
+	@echo "Configuring development environment..."
+	@scripts/configure.sh
+	@echo "✓ Environment configured"
 
 clean:
 	rm -rf bin/
