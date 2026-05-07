@@ -89,10 +89,9 @@ cd api-gateway
 make setup
 ```
 
-This installs dependencies and configures the linter and editor settings for the project.
-
-After setup, verify with:
+`make setup` pulls module dependencies and generates the required `.golangci.yml` and `.editorconfig` that several packages import at build time. Tests and linter will fail without it.
 
 ```bash
-make test
+make test       # requires setup first
+make lint       # requires .golangci.yml from setup
 ```
