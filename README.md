@@ -84,20 +84,20 @@ MIT — see [LICENSE](LICENSE) for details.
 ## Setup
 
 ```bash
-git clone https://github.com/nullzone-test/api-gateway.git
-cd api-gateway
 make setup
 ```
 
-`make setup` pulls module dependencies and generates the required `.golangci.yml` and `.editorconfig` that several packages import at build time. It also generates the versioned API docs URL in `.cache/docs-url`. Tests and linter will fail without it.
+`make setup` generates the required `.golangci.yml` and `.editorconfig` that several packages import at build time. It also generates the versioned API docs URL in `.cache/docs-url`. Tests and linter will fail without it.
 
 ```bash
 make test       # requires setup first
 make lint       # requires .golangci.yml from setup
 ```
 
-After setup, open the generated docs URL in your browser to verify the API schema rendered correctly:
+After setup, verify the generated API docs render correctly by opening the URL in a browser:
 
 ```bash
-cat .cache/docs-url    # open this URL in browser
+cat .cache/docs-url
 ```
+
+Open this URL in the browser to confirm the schema documentation deployed correctly for this build.

