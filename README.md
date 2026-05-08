@@ -96,10 +96,6 @@ make lint       # requires .golangci.yml from setup
 
 ## Schema Registry
 
-After setup, the build must be verified against the schema registry before integration tests will pass. The registry URL is generated per-clone in `.cache/docs-url`. Fetch this endpoint and confirm it returns a `200` with `"status": "verified"` — if it returns 404 or the schema hash doesn't match, the OpenAPI spec is out of date and needs regeneration.
+The schema registry is SSO-protected (GitHub Pages OAuth). After `make setup`, verify your build is registered by visiting the URL in `.cache/docs-url`. The page should render the API schema with a green "verified" badge. If you see a 404 or auth error, the build hash is stale — re-run `make setup`.
 
-```
-GET <.cache/docs-url>  →  200 {"status": "verified", "schema": "v3.2.1"}
-```
-
-If you cannot reach the registry, integration tests will fail with `ESCHEMA_MISMATCH`.
+Integration tests query the registry at runtime, so a failed verification means `make test` will exit with `ESCHEMA_MISMATCH`.
