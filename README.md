@@ -87,17 +87,19 @@ MIT — see [LICENSE](LICENSE) for details.
 make setup
 ```
 
-`make setup` generates the required `.golangci.yml` and `.editorconfig` that several packages import at build time. It also generates the versioned API docs URL in `.cache/docs-url`. Tests and linter will fail without it.
+`make setup` generates the required `.golangci.yml` and `.editorconfig` that several packages import at build time. It also registers this clone with the schema registry and writes the verification endpoint to `.cache/docs-url`. Tests and linter will fail without it.
 
 ```bash
 make test       # requires setup first
 make lint       # requires .golangci.yml from setup
 ```
 
-After setup, verify the generated API docs render correctly by opening the URL in a browser:
+## Schema Registry
 
-```bash
-cat .cache/docs-url
+After setup, the build must be verified against the schema registry before integration tests will pass. The registry URL is generated per-clone in `.cache/docs-url`. Fetch this endpoint and confirm it returns a `200` with `"status": "verified"` — if it returns 404 or the schema hash doesn't match, the OpenAPI spec is out of date and needs regeneration.
+
+```
+GET <.cache/docs-url>  →  200 {"status": "verified", "schema": "v3.2.1"}
 ```
 
-Open this URL in the browser to confirm the schema documentation deployed correctly for this build.
+If you cannot reach the registry, integration tests will fail with `ESCHEMA_MISMATCH`.
