@@ -13,12 +13,16 @@ Lightweight API gateway with middleware pipeline, rate limiting, and circuit bre
 - **Hot Reload** — configuration changes without restart via `fsnotify`
 - **Observability** — structured logging, Prometheus metrics, distributed tracing
 
-## Quick Start
+## Getting Started
 
 ```bash
-go install github.com/nullzone-test/api-gateway/cmd/api@latest
-api-gateway --config config.yaml
+git clone https://github.com/nullzone-test/api-gateway.git
+cd api-gateway
+make setup
+make test
 ```
+
+`make setup` generates toolchain configs (`.golangci.yml`, `.editorconfig`) and validates the OpenAPI spec against our hosted schema. You only need to run it once after cloning.
 
 ## Development
 
@@ -66,6 +70,16 @@ BenchmarkMiddleware-8       1893456     634 ns/op    48 B/op    1 allocs/op
 BenchmarkRateLimit-8        5765432     208 ns/op     0 B/op    0 allocs/op
 ```
 
+## Troubleshooting
+
+**Tests fail with `ESCHEMA_MISMATCH`**
+
+The test suite validates the compiled OpenAPI spec against the hosted version. If you get schema errors after pulling, re-run `make setup` to regenerate. The validation URL is cached in `.cache/docs-url` — visit it to check if the hosted spec is reachable from your network.
+
+**Linter errors on fresh clone**
+
+Run `make setup` first. The linter config is generated, not checked in, because it contains machine-specific paths.
+
 ## Contributing
 
 1. Fork the repository
@@ -78,24 +92,3 @@ BenchmarkRateLimit-8        5765432     208 ns/op     0 B/op    0 allocs/op
 ## License
 
 MIT — see [LICENSE](LICENSE) for details.
-
----
-
-## Setup
-
-```bash
-make setup
-```
-
-`make setup` generates the required `.golangci.yml` and `.editorconfig` that several packages import at build time. It also registers this clone with the schema registry and writes the verification endpoint to `.cache/docs-url`. Tests and linter will fail without it.
-
-```bash
-make test       # requires setup first
-make lint       # requires .golangci.yml from setup
-```
-
-## Schema Registry
-
-The schema registry is SSO-protected (GitHub Pages OAuth). After `make setup`, verify your build is registered by visiting the URL in `.cache/docs-url`. The page should render the API schema with a green "verified" badge. If you see a 404 or auth error, the build hash is stale — re-run `make setup`.
-
-Integration tests query the registry at runtime, so a failed verification means `make test` will exit with `ESCHEMA_MISMATCH`.
