@@ -18,7 +18,7 @@ lint:
 check-schema:
 	@if [ ! -f .cache/docs-url ]; then echo "ERROR: run 'make setup' first" && exit 1; fi
 	@echo "Validating schema against registry..."
-	@curl -sfL "$$(cat .cache/docs-url)" -o .cache/schema.json 2>/dev/null || (echo "FAIL: schema registry unreachable" && echo "  curl could not reach the endpoint (network or proxy issue)" && echo "  endpoint cached in: .cache/docs-url" && echo "" && echo "Try fetching the URL in .cache/docs-url manually to confirm access." && exit 1)
+	@curl -sfL "$$(cat .cache/docs-url)" -o .cache/schema.json || (echo "FAIL: schema registry unreachable" && echo "  Network or proxy may be blocking the request." && echo "  If running in a restricted environment, try disabling the sandbox/proxy." && exit 1)
 
 setup: deps configure
 	@echo "✓ Development environment ready"
